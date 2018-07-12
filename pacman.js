@@ -55,6 +55,8 @@ function clearScreen() {
 
 function displayStats() {
   console.log('Score: ' + score + '     Lives: ' + lives);
+    if (lives < 1)
+      gameOver();  
 }
 
 function displayMenu() {
@@ -138,7 +140,13 @@ stdin.on('data', function(key) {
   setTimeout(drawScreen, 800); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
 });
 
+// Game Over
+function gameOver() {
+  console.log('\n\nOut of lives\n');
+  process.exit();
+}
+
 // Player Quits
 process.on('exit', function() {
-  console.log('\n\nGame Over!\n');
+  console.log('Game Over!\n');
 });
