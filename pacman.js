@@ -37,6 +37,8 @@ var clyde = {
   edible: false
 }
 
+var ghosts = [inky, blinky, pinky, clyde]
+
 // Draw the screen functionality
 function drawScreen() {
   clearScreen();
@@ -58,6 +60,10 @@ function displayStats() {
 function displayMenu() {
   console.log('\n\nSelect Option:\n');  // each \n creates a new line
   console.log('(d) Eat Dot');
+  console.log('(1) Eat Inky');
+  console.log('(2) Eat Blinky');
+  console.log('(3) Eat Pinky');
+  console.log('(4) Eat Clyde');
   console.log('(q) Quit');
 }
 
@@ -73,6 +79,16 @@ function eatDot() {
   score += 10;
 }
 
+function eatGhost(ghost) {
+  if (ghost.edible) {
+    console.log('\nChomp! You ate ' + ghost.name);
+    score += 25;
+  } else {
+    console.log('\n Uh-oh... ' + ghost.name + ' killed you!');
+    lives -= 1;
+  }
+}
+
 
 // Process Player's Input
 function processInput(key) {
@@ -83,6 +99,18 @@ function processInput(key) {
       break;
     case 'd':
       eatDot();
+      break;
+    case '1':
+      eatGhost(inky);
+      break;
+    case '2':
+      eatGhost(blinky);
+      break;
+    case '3':
+      eatGhost(pinky);
+      break;
+    case '4' :
+      eatGhost(clyde);
       break;
     default:
       console.log('\nInvalid Command!');
@@ -107,7 +135,7 @@ drawScreen();
 stdin.on('data', function(key) {
   process.stdout.write(key);
   processInput(key);
-  setTimeout(drawScreen, 300); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
+  setTimeout(drawScreen, 800); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
 });
 
 // Player Quits
