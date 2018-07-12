@@ -1,6 +1,7 @@
 // Setup initial game stats
 var score = 0;
 var lives = 2;
+var powerPellets = 4;
 
 
 // Define your ghosts here
@@ -54,18 +55,20 @@ function clearScreen() {
 }
 
 function displayStats() {
-  console.log('Score: ' + score + '     Lives: ' + lives);
+  console.log('Score: ' + score + '     Lives: ' + lives + '\n\nPower-Pellets:' + powerPellets);
     if (lives < 1)
-      gameOver();  
+      gameOver();
 }
 
 function displayMenu() {
   console.log('\n\nSelect Option:\n');  // each \n creates a new line
   console.log('(d) Eat Dot');
-  console.log('(1) Eat Inky');
-  console.log('(2) Eat Blinky');
-  console.log('(3) Eat Pinky');
-  console.log('(4) Eat Clyde');
+  if (powerPellets > 0)
+    console.log('(p) Eat Power-Pellet');
+  console.log('(1) Eat Inky ' + edible(inky));
+  console.log('(2) Eat Blinky ' + edible(blinky));
+  console.log('(3) Eat Pinky ' + edible(pinky));
+  console.log('(4) Eat Clyde ' + edible(clyde));
   console.log('(q) Quit');
 }
 
@@ -83,12 +86,29 @@ function eatDot() {
 
 function eatGhost(ghost) {
   if (ghost.edible) {
-    console.log('\nChomp! You ate ' + ghost.name);
-    score += 25;
+    console.log('\nChomp! You ate ' + ghost.character + " " + ghost.name);
+    ghost.edible = false;
+    score += 200;
   } else {
     console.log('\n Uh-oh... ' + ghost.name + ' killed you!');
     lives -= 1;
   }
+}
+
+function eatPowerPellet() {
+  console.log('\nPower-Pellet Time!');
+  score += 50
+  powerPellets -= 1
+  for (var i = 0; i < ghosts.length; i++) {
+    ghosts[i].edible = true;
+  }
+}
+
+function edible(ghost) {
+  if (ghost.edible)
+    return '(edible)'
+  else
+    return '(inedible)'
 }
 
 
@@ -101,6 +121,12 @@ function processInput(key) {
       break;
     case 'd':
       eatDot();
+      break;
+    case 'p':
+      if (powerPellets > 0)
+        eatPowerPellet();
+      else
+        console.log('\nNo Power-Pellets Left!');
       break;
     case '1':
       eatGhost(inky);
@@ -137,16 +163,16 @@ drawScreen();
 stdin.on('data', function(key) {
   process.stdout.write(key);
   processInput(key);
-  setTimeout(drawScreen, 800); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
+  setTimeout(drawScreen, 1200); // The command prompt will flash a message for 300 milliseoncds before it re-draws the screen. You can adjust the 300 number to increase this.
 });
 
 // Game Over
 function gameOver() {
-  console.log('\n\nOut of lives\n');
+  console.log('\n\n- Out of lives! -');
   process.exit();
 }
 
 // Player Quits
 process.on('exit', function() {
-  console.log('Game Over!\n');
+  console.log('\n\n*** G a m e  O v e r ! ***\n');
 });
